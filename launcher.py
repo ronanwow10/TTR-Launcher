@@ -2,20 +2,38 @@
 
 import os
 import time
+import json
 
 import requests
 
 GAME = "/Users/{}/Library/Application Support/Toontown Rewritten/Toontown Rewritten".format(os.getlogin())
 DYLD_LIBRARY_PATH = "/Users/{}/Library/Application Support/Toontown Rewritten/Libraries.bundle".format(os.getlogin())
 DYLD_FRAMEWORK_PATH = "/Users/{}/Library/Application Support/Toontown Rewritten/Frameworks".format(os.getlogin())
-
+CONFIG_DIRECTORY = os.path.expanduser("~/.config/ttrlauncher/")
 
 URL = "https://www.toontownrewritten.com/api/login?format=json"
 
-ACCOUNTS = {}
+if not os.path.exists(CONFIG_DIRECTORY):
+    os.makedirs(CONFIG_DIRECTORY)
+
+if not os.path.exists(CONFIG_DIRECTORY + 'config.json'):
+    with open(CONFIG_DIRECTORY + 'config.json', 'w') as f:
+        f.write(json.dumps({}))
+    with open(CONFIG_DIRECTORY + 'config.json.example', 'w') as f:
+        f.write(json.dumps({"AccountNickName": ['username', 'password']}))
+
+ACCOUNTS = json.load(open(CONFIG_DIRECTORY + 'config.json', 'r'))
+
+
+def die(reason):
+    print(reason)
+    exit(1)
 
 
 def select_account():
+    if not len(ACCOUNTS):
+        die('Error: You need to open {} and add some accounts! See config.json.example for examples.'.format(
+            CONFIG_DIRECTORY + "config.json"))
     while True:
         print("Available accounts: {}".format(", ".join(ACCOUNTS.keys())))
         account = input('Which account? ')
@@ -23,10 +41,6 @@ def select_account():
             return ACCOUNTS[account]
         print("Invalid account, try again.")
 
-
-def die(reason):
-    print(reason)
-    exit(1)
 
 def finish_partial_auth(r):
     while True:
@@ -65,7 +79,8 @@ def login(account):
     if r['success'] == "true":
         os.environ['TTR_GAMESERVER'] = r['gameserver']
         os.environ['TTR_PLAYCOOKIE'] = r['cookie']
-        os.system('DYLD_LIBRARY_PATH="{}" DYLD_FRAMEWORK_PATH="{}" "{}"'.format(DYLD_LIBRARY_PATH, DYLD_FRAMEWORK_PATH, GAME))
+        os.system(
+            'DYLD_LIBRARY_PATH="{}" DYLD_FRAMEWORK_PATH="{}" "{}"'.format(DYLD_LIBRARY_PATH, DYLD_FRAMEWORK_PATH, GAME))
         exit(0)
     else:
         die('Somehow we got here, not sure how ...')
