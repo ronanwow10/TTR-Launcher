@@ -5,6 +5,7 @@ import time
 import json
 
 import requests
+import sys
 
 GAME = "/Users/{}/Library/Application Support/Toontown Rewritten/Toontown Rewritten".format(os.getlogin())
 DYLD_LIBRARY_PATH = "/Users/{}/Library/Application Support/Toontown Rewritten/Libraries.bundle".format(os.getlogin())
@@ -34,6 +35,10 @@ def select_account():
     if not len(ACCOUNTS):
         die('Error: You need to open {} and add some accounts! See config.json.example for examples.'.format(
             CONFIG_DIRECTORY + "config.json"))
+
+    if len(sys.argv) > 1 and sys.argv[1] in ACCOUNTS.keys():
+        return ACCOUNTS[sys.argv[1]]
+
     while True:
         print("Available accounts: {}".format(", ".join(ACCOUNTS.keys())))
         account = input('Which account? ')
