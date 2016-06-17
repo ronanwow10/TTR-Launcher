@@ -79,8 +79,9 @@ def login(account):
     if r['success'] == "true":
         os.environ['TTR_GAMESERVER'] = r['gameserver']
         os.environ['TTR_PLAYCOOKIE'] = r['cookie']
-        os.system(
-            'DYLD_LIBRARY_PATH="{}" DYLD_FRAMEWORK_PATH="{}" "{}"'.format(DYLD_LIBRARY_PATH, DYLD_FRAMEWORK_PATH, GAME))
+        os.system('cd "{}" && DYLD_LIBRARY_PATH="{}" DYLD_FRAMEWORK_PATH="{}" "{}"'.format(
+            os.path.dirname(GAME), DYLD_LIBRARY_PATH, DYLD_FRAMEWORK_PATH, GAME
+        ))
         exit(0)
     else:
         die('Somehow we got here, not sure how ...')
