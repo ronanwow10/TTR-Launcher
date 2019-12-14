@@ -10,10 +10,9 @@ import sys
 GAME = "/Users/{}/Library/Application Support/Toontown Rewritten/Toontown Rewritten".format(os.getlogin())
 DYLD_LIBRARY_PATH = "/Users/{}/Library/Application Support/Toontown Rewritten/Libraries.bundle".format(os.getlogin())
 DYLD_FRAMEWORK_PATH = "/Users/{}/Library/Application Support/Toontown Rewritten/Frameworks".format(os.getlogin())
-CONFIG_DIRECTORY = os.path.expanduser("~/.config/ttrlauncher/")
+CONFIG_DIRECTORY = os.path.expanduser("~/.config/ttolauncher/")
 
-URL = "https://www.toontownrewritten.com/api/login?format=json"
-
+URL = "http://web.archive.org/web/20120305081254/http://toontown.go.com/"
 if not os.path.exists(CONFIG_DIRECTORY):
     os.makedirs(CONFIG_DIRECTORY)
 
